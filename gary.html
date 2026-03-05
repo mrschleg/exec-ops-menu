@@ -471,7 +471,7 @@
     <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
     Share My Selections
   </button>
-  <div class="submit-hint">Opens a pre-filled email to Melissa with your selections — nothing sends until you hit send.</div>
+  <div class="submit-hint">Opens a draft in Outlook with your selections — nothing sends until you hit send.</div>
 </section>
 
 <section class="footer">
@@ -602,9 +602,12 @@ function toggleCard(ci) { document.querySelectorAll('.card')[ci].classList.toggl
 
 function toggleOffering(event, ci, oi) {
   event.stopPropagation();
-  capabilities[ci].offerings[oi].checked = !capabilities[ci].offerings[oi].checked;
-  saveState(); render();
-  document.querySelectorAll('.card')[ci].classList.add('expanded');
+  var o = capabilities[ci].offerings[oi];
+  o.checked = !o.checked;
+  var el = event.currentTarget;
+  if (o.checked) { el.classList.add('checked'); } else { el.classList.remove('checked'); }
+  saveState();
+  updateCount();
 }
 
 function updateCount() {
@@ -654,7 +657,7 @@ function shareSelections() {
   var subject = encodeURIComponent('Exec Ops Capability Menu — ' + EXEC_NAME);
   var body = encodeURIComponent(lines.join('\n'));
 
-  window.location.href = 'mailto:' + MAILTO + '?subject=' + subject + '&body=' + body;
+  window.open('https://outlook.office.com/mail/deeplink/compose?to=' + encodeURIComponent(MAILTO) + '&subject=' + subject + '&body=' + body, '_blank');
 }
 
 loadState();
